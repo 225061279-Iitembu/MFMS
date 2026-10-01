@@ -2,10 +2,10 @@
 #define REPORTS_H
 
 void reportsMenu();
-void generateBudgetReport();
-void generateAssetsReport();
 void generateEmployeeReport();
+void generateBudgetReport();
 void generateSupplierReport();
+void generateAssetsReport();
 void generateFinancialReport();
 void generateAllReports();
 
