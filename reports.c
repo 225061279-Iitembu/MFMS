@@ -75,7 +75,8 @@ void reportsMenu() {
       break;
       case 6: generateAllReports();
       break;
-      case 0: break;
+      case 0:
+      break;
       default: printf("Invalid choice entered.\n");
     }
   } while(choice != 0);
