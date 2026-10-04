@@ -56,6 +56,7 @@ void supplierMenu(void)
 void addSupplier(void)
 {
     int i;
+    int duplicate;
 
     if (supplierCount >= MAX_SUPPLIERS)
     {
@@ -65,42 +66,54 @@ void addSupplier(void)
 
     printf("\n--- Add Supplier ---\n");
 
-    supplierID[supplierCount] =
-        getValidInt("Enter Supplier ID: ", 1000, 1000000);
-
-    /* Check for duplicate Supplier ID */
-    for (i = 0; i < supplierCount; i++)
+    do
     {
-        if (supplierID[i] == supplierID[supplierCount])
+        duplicate = 0;
+
+        supplierID[supplierCount] =
+            getValidInt("Enter Supplier ID: ", 1000, 999999999);
+
+        for (i = 0; i < supplierCount; i++)
         {
-            printf("Supplier ID already exists.\n");
-            return;
+            if (supplierID[i] == supplierID[supplierCount])
+            {
+                printf("Supplier ID already exists. Enter another ID.\n");
+                duplicate = 1;
+                break;
+            }
         }
-    }
+
+    } while (duplicate == 1);
 
     getValidString("Enter Supplier Name: ",
                    supplierName[supplierCount],
                    sizeof(supplierName[supplierCount]));
 
-    getValidString("Enter Email: ",
-                   supplierEmail[supplierCount],
-                   sizeof(supplierEmail[supplierCount]));
-
-    if (!isValidEmail(supplierEmail[supplierCount]))
+    do
     {
-        printf("Invalid email format.\n");
-        return;
-    }
+        getValidString("Enter Email: ",
+                       supplierEmail[supplierCount],
+                       sizeof(supplierEmail[supplierCount]));
 
-    getValidString("Enter Contact Number: ",
-                   supplierContactNumber[supplierCount],
-                   sizeof(supplierContactNumber[supplierCount]));
+        if (!isValidEmail(supplierEmail[supplierCount]))
+        {
+            printf("Invalid email. Enter a valid email address.\n");
+        }
 
-    if (!isValidPhone(supplierContactNumber[supplierCount]))
+    } while (!isValidEmail(supplierEmail[supplierCount]));
+
+    do
     {
-        printf("Invalid phone number format.\n");
-        return;
-    }
+        getValidString("Enter Contact Number: ",
+                       supplierContactNumber[supplierCount],
+                       sizeof(supplierContactNumber[supplierCount]));
+
+        if (!isValidPhone(supplierContactNumber[supplierCount]))
+        {
+            printf("Invalid contact number. Enter again.\n");
+        }
+
+    } while (!isValidPhone(supplierContactNumber[supplierCount]));
 
     getValidString("Enter Location: ",
                    supplierLocation[supplierCount],
@@ -157,6 +170,12 @@ void searchSupplier(void)
     int found = 0;
     int i;
 
+    if (supplierCount == 0)
+    {
+        printf("\nNo suppliers registered.\n");
+        return;
+    }
+
     getValidString("Enter Supplier Name to search: ",
                    name,
                    sizeof(name));
@@ -209,8 +228,11 @@ void compareSuppliers(void)
         return;
     }
 
-    firstID = getValidInt("Enter first Supplier ID: ", 1000, 1000000);
-    secondID = getValidInt("Enter second Supplier ID: ", 1000, 1000000);
+    firstID =
+        getValidInt("Enter first Supplier ID: ", 1000, 999999999);
+
+    secondID =
+        getValidInt("Enter second Supplier ID: ", 1000, 999999999);
 
     for (i = 0; i < supplierCount; i++)
     {
