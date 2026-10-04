@@ -1,42 +1,21 @@
-/* validation.c - checks the input from the user */
+/* validation.c - checks the input from the user.
+   Every answer is read with fgets and checked one character at a time. */
 
 #include <stdio.h>
 #include <string.h>
 #include "validation.h"
 
-/* Reads a line of text into line and removes the Enter.
-   If the user typed too much, the extra is thrown away and line becomes empty. */
-void readLine(char line[], int size)
-{
-    int c;
-
-    if (fgets(line, size, stdin) == NULL)
-    {
-        line[0] = '\0';
-        return;
-    }
-
-    if (line[strlen(line) - 1] != '\n')
-    {
-        while ((c = getchar()) != '\n' && c != EOF)
-        {
-        }
-        line[0] = '\0';
-    }
-
-    line[strcspn(line, "\n")] = '\0';
-}
-
 /* Asks until the user enters a whole number from min to max */
 int getValidInt(char prompt[], int min, int max)
 {
-    char line[50];
+    char line[100];
     int number, i, valid, sign;
 
     do
     {
         printf("%s", prompt);
-        readLine(line, sizeof(line));
+        fgets(line, sizeof(line), stdin);
+        line[strcspn(line, "\n")] = '\0';      /* remove the Enter */
 
         valid = 1;
         number = 0;
@@ -89,14 +68,15 @@ int getValidInt(char prompt[], int min, int max)
 /* Asks until the user enters a number (decimals allowed) that is not less than min */
 double getValidDouble(char prompt[], double min)
 {
-    char line[50];
+    char line[100];
     double number, divisor;
     int i, valid, sign, dots, digits;
 
     do
     {
         printf("%s", prompt);
-        readLine(line, sizeof(line));
+        fgets(line, sizeof(line), stdin);
+        line[strcspn(line, "\n")] = '\0';
 
         valid = 1;
         number = 0;
@@ -164,13 +144,14 @@ double getValidDouble(char prompt[], double min)
 /* Asks until the user enters text that is not empty and fits in text[size] */
 void getValidString(char prompt[], char text[], int size)
 {
-    char line[100];
+    char line[200];
     int i, valid, length;
 
     do
     {
         printf("%s", prompt);
-        readLine(line, sizeof(line));
+        fgets(line, sizeof(line), stdin);
+        line[strcspn(line, "\n")] = '\0';
 
         length = strlen(line);
         valid = 0;
@@ -186,7 +167,7 @@ void getValidString(char prompt[], char text[], int size)
 
         if (valid == 0)
         {
-            printf("Input cannot be empty or too long.\n");
+            printf("Input cannot be empty.\n");
         }
         else if (length >= size)
         {
@@ -250,4 +231,3 @@ int isValidPhone(char phone[])
     }
     return 0;
 }
-
