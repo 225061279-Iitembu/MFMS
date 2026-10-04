@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <string.h>
 #include "budget.h"
+#include "validation.h"
 
 Budget budgets[MAX_BUDGETS];
 int budgetCount = 0;
@@ -15,26 +15,15 @@ void addBudget(void)
 
     printf("\n--- Add Department Budget ---\n");
 
-    printf("Enter Department: ");
-    scanf(" %[^\n]", budgets[budgetCount].department);
+    getValidString("Enter Department: ",
+                   budgets[budgetCount].department,
+                   sizeof(budgets[budgetCount].department));
 
-    printf("Enter Allocated Budget: ");
-    scanf("%lf", &budgets[budgetCount].allocatedBudget);
+    budgets[budgetCount].allocatedBudget =
+        getValidDouble("Enter Allocated Budget: ", 0.0);
 
-    while (budgets[budgetCount].allocatedBudget < 0)
-    {
-        printf("Budget cannot be negative. Enter again: ");
-        scanf("%lf", &budgets[budgetCount].allocatedBudget);
-    }
-
-    printf("Enter Expenditure: ");
-    scanf("%lf", &budgets[budgetCount].expenditure);
-
-    while (budgets[budgetCount].expenditure < 0)
-    {
-        printf("Expenditure cannot be negative. Enter again: ");
-        scanf("%lf", &budgets[budgetCount].expenditure);
-    }
+    budgets[budgetCount].expenditure =
+        getValidDouble("Enter Expenditure: ", 0.0);
 
     budgetCount++;
 
@@ -109,6 +98,3 @@ void calculateBudget(void)
         printf("No departments are over budget.\n");
     }
 }
-
-
-
