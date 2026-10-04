@@ -18,7 +18,7 @@ This project was developed as part of the PAP521S – Programming in Practice co
 | -------------- | -------------- | --------------------------------------- |
 | Collin         | 225114615      | Employee Management & Budget Management |
 | Joaquim        | 225166135      | Supplier Management                     |
-| Ashikuti       | 226003663      | Asset Management                        |
+| IITEMBU        | 225061279      | Asset Management                        |
 | Tangi          | 226135330      | Reports                                 |
 | Johannes       | 223081787      | Integration & Validation                |
 | Helena Iitembu | 225061279      | Testing & Documentation                 |
