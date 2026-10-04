@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "employees.h"
+#include "validation.h"
 
 Employee employees[MAX_EMPLOYEES];
+
 int employeeCount = 0;
 
 void addEmployee(void)
@@ -14,9 +16,10 @@ void addEmployee(void)
     }
 
     printf("\n--- Add Employee ---\n");
-    printf("Enter Employee ID: ");
-    scanf("%d", &employees[employeeCount].employeeID);
-	
+
+    employees[employeeCount].employeeID =
+        getValidInt("Enter Employee ID: ", 1, 1000000);
+
     /* Check for duplicate employee ID */
     for (int i = 0; i < employeeCount; i++)
     {
@@ -27,50 +30,22 @@ void addEmployee(void)
         }
     }
 
-    printf("Enter Name: ");
-    scanf(" %[^\n]", employees[employeeCount].name);
+    getValidString("Enter Name: ",
+                   employees[employeeCount].name,
+                   sizeof(employees[employeeCount].name));
 
-    if (strlen(employees[employeeCount].name) == 0)
-    {
-        printf("Name cannot be empty.\n");
-        return;
-    }
+    getValidString("Enter Department: ",
+                   employees[employeeCount].department,
+                   sizeof(employees[employeeCount].department));
 
-    printf("Enter Department: ");
-    scanf(" %[^\n]", employees[employeeCount].department);
+    employees[employeeCount].basicSalary =
+        getValidDouble("Enter Basic Salary: ", 0.0);
 
-    if (strlen(employees[employeeCount].department) == 0)
-    {
-        printf("Department cannot be empty.\n");
-        return;
-    }
+    employees[employeeCount].housingAllowance =
+        getValidDouble("Enter Housing Allowance: ", 0.0);
 
-    printf("Enter Basic Salary: ");
-    scanf("%lf", &employees[employeeCount].basicSalary);
-
-    while (employees[employeeCount].basicSalary < 0)
-    {
-        printf("Salary cannot be negative. Enter again: ");
-        scanf("%lf", &employees[employeeCount].basicSalary);
-    }
-
-    printf("Enter Housing Allowance: ");
-    scanf("%lf", &employees[employeeCount].housingAllowance);
-
-    while (employees[employeeCount].housingAllowance < 0)
-    {
-        printf("Allowance cannot be negative. Enter again: ");
-        scanf("%lf", &employees[employeeCount].housingAllowance);
-    }
-
-    printf("Enter Transport Allowance: ");
-    scanf("%lf", &employees[employeeCount].transportAllowance);
-
-    while (employees[employeeCount].transportAllowance < 0)
-    {
-        printf("Allowance cannot be negative. Enter again: ");
-        scanf("%lf", &employees[employeeCount].transportAllowance);
-    }
+    employees[employeeCount].transportAllowance =
+        getValidDouble("Enter Transport Allowance: ", 0.0);
 
     employeeCount++;
 
@@ -105,8 +80,8 @@ void searchEmployee(void)
     int found = 0;
 
     printf("\n--- Search Employee ---\n");
-    printf("Enter Employee ID: ");
-    scanf("%d", &id);
+
+    id = getValidInt("Enter Employee ID: ", 1, 1000000);
 
     for (int i = 0; i < employeeCount; i++)
     {
@@ -140,8 +115,8 @@ void calculateSalary(void)
     double totalSalary;
 
     printf("\n--- Salary Calculation ---\n");
-    printf("Enter Employee ID: ");
-    scanf("%d", &id);
+
+    id = getValidInt("Enter Employee ID: ", 1, 1000000);
 
     for (int i = 0; i < employeeCount; i++)
     {
