@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "suppliers.h"
+#include "validation.h"
 
 int supplierID[MAX_SUPPLIERS];
 char supplierName[MAX_SUPPLIERS][100];
@@ -11,7 +12,6 @@ char supplierCategory[MAX_SUPPLIERS][50];
 double amountOwed[MAX_SUPPLIERS];
 
 int supplierCount = 0;
-
 
 void supplierMenu(void)
 {
@@ -25,10 +25,8 @@ void supplierMenu(void)
         printf("3. Search Supplier\n");
         printf("4. Compare Suppliers\n");
         printf("5. Return to Main Menu\n");
-        printf("Enter your choice: ");
 
-        scanf("%d", &choice);
-        getchar();
+        choice = getValidInt("Enter your choice: ", 1, 5);
 
         switch (choice)
         {
@@ -50,9 +48,6 @@ void supplierMenu(void)
 
             case 5:
                 break;
-
-            default:
-                printf("Invalid choice.\n");
         }
 
     } while (choice != 5);
@@ -68,21 +63,12 @@ void addSupplier(void)
         return;
     }
 
-    /* Supplier ID */
+    printf("\n--- Add Supplier ---\n");
 
-    printf("\nEnter Supplier ID: ");
-    scanf("%d", &supplierID[supplierCount]);
-
-    while (supplierID[supplierCount] < 1000)
-    {
-        printf("Supplier ID must be at least 4 digits. Enter again: ");
-        scanf("%d", &supplierID[supplierCount]);
-    }
-
-    getchar();
+    supplierID[supplierCount] =
+        getValidInt("Enter Supplier ID: ", 1000, 1000000);
 
     /* Check for duplicate Supplier ID */
-
     for (i = 0; i < supplierCount; i++)
     {
         if (supplierID[i] == supplierID[supplierCount])
@@ -92,72 +78,45 @@ void addSupplier(void)
         }
     }
 
-    /* Supplier Name */
+    getValidString("Enter Supplier Name: ",
+                   supplierName[supplierCount],
+                   sizeof(supplierName[supplierCount]));
 
-    printf("Enter Supplier Name: ");
-    fgets(supplierName[supplierCount],
-          sizeof(supplierName[supplierCount]), stdin);
+    getValidString("Enter Email: ",
+                   supplierEmail[supplierCount],
+                   sizeof(supplierEmail[supplierCount]));
 
-    supplierName[supplierCount][
-        strcspn(supplierName[supplierCount], "\n")
-    ] = '\0';
-
-    /* Email */
-
-    printf("Enter Email: ");
-    fgets(supplierEmail[supplierCount],
-          sizeof(supplierEmail[supplierCount]), stdin);
-
-    supplierEmail[supplierCount][
-        strcspn(supplierEmail[supplierCount], "\n")
-    ] = '\0';
-
-    /* Contact Number */
-
-    printf("Enter Contact Number: ");
-    fgets(supplierContactNumber[supplierCount],
-          sizeof(supplierContactNumber[supplierCount]), stdin);
-
-    supplierContactNumber[supplierCount][
-        strcspn(supplierContactNumber[supplierCount], "\n")
-    ] = '\0';
-
-    /* Location */
-
-    printf("Enter Location: ");
-    fgets(supplierLocation[supplierCount],
-          sizeof(supplierLocation[supplierCount]), stdin);
-
-    supplierLocation[supplierCount][
-        strcspn(supplierLocation[supplierCount], "\n")
-    ] = '\0';
-
-    /* Supplier Category */
-
-    printf("Enter Supplier Category: ");
-    fgets(supplierCategory[supplierCount],
-          sizeof(supplierCategory[supplierCount]), stdin);
-
-    supplierCategory[supplierCount][
-        strcspn(supplierCategory[supplierCount], "\n")
-    ] = '\0';
-
-    /* Amount Owed */
-
-    printf("Enter Amount Owed: N$");
-    scanf("%lf", &amountOwed[supplierCount]);
-
-    while (amountOwed[supplierCount] < 0)
+    if (!isValidEmail(supplierEmail[supplierCount]))
     {
-        printf("Amount owed cannot be negative. Enter again: N$");
-        scanf("%lf", &amountOwed[supplierCount]);
+        printf("Invalid email format.\n");
+        return;
     }
 
-    getchar();
+    getValidString("Enter Contact Number: ",
+                   supplierContactNumber[supplierCount],
+                   sizeof(supplierContactNumber[supplierCount]));
+
+    if (!isValidPhone(supplierContactNumber[supplierCount]))
+    {
+        printf("Invalid phone number format.\n");
+        return;
+    }
+
+    getValidString("Enter Location: ",
+                   supplierLocation[supplierCount],
+                   sizeof(supplierLocation[supplierCount]));
+
+    getValidString("Enter Supplier Category: ",
+                   supplierCategory[supplierCount],
+                   sizeof(supplierCategory[supplierCount]));
+
+    amountOwed[supplierCount] =
+        getValidDouble("Enter Amount Owed: N$", 0.0);
+
     supplierCount++;
+
     printf("Supplier added successfully.\n");
 }
-
 
 void displaySuppliers(void)
 {
@@ -181,9 +140,6 @@ void displaySuppliers(void)
         printf("Supplier Category: %s\n", supplierCategory[i]);
         printf("Amount Owed: N$%.2f\n", amountOwed[i]);
 
-
-        /* Payment Status */
-
         if (amountOwed[i] == 0)
         {
             printf("Payment Status: PAID\n");
@@ -201,11 +157,9 @@ void searchSupplier(void)
     int found = 0;
     int i;
 
-    printf("\nEnter Supplier Name to search: ");
-
-    fgets(name, sizeof(name), stdin);
-
-    name[strcspn(name, "\n")] = '\0';
+    getValidString("Enter Supplier Name to search: ",
+                   name,
+                   sizeof(name));
 
     for (i = 0; i < supplierCount; i++)
     {
@@ -221,7 +175,6 @@ void searchSupplier(void)
             printf("Supplier Category: %s\n", supplierCategory[i]);
             printf("Amount Owed: N$%.2f\n", amountOwed[i]);
 
-
             if (amountOwed[i] == 0)
             {
                 printf("Payment Status: PAID\n");
@@ -230,6 +183,7 @@ void searchSupplier(void)
             {
                 printf("Payment Status: OUTSTANDING\n");
             }
+
             found = 1;
             break;
         }
@@ -255,15 +209,8 @@ void compareSuppliers(void)
         return;
     }
 
-    printf("\nEnter first Supplier ID: ");
-    scanf("%d", &firstID);
-
-    printf("Enter second Supplier ID: ");
-    scanf("%d", &secondID);
-
-    getchar();
-
-    /* Find both suppliers */
+    firstID = getValidInt("Enter first Supplier ID: ", 1000, 1000000);
+    secondID = getValidInt("Enter second Supplier ID: ", 1000, 1000000);
 
     for (i = 0; i < supplierCount; i++)
     {
@@ -292,32 +239,23 @@ void compareSuppliers(void)
            supplierName[secondIndex],
            amountOwed[secondIndex]);
 
-
-    /* Compare Amount Owed */
-
     if (amountOwed[firstIndex] > amountOwed[secondIndex])
     {
         printf("%s is owed more money.\n",
                supplierName[firstIndex]);
     }
-
     else if (amountOwed[secondIndex] > amountOwed[firstIndex])
     {
         printf("%s is owed more money.\n",
                supplierName[secondIndex]);
     }
-
     else
     {
         printf("Both suppliers are owed the same amount.\n");
     }
 
-    /* Compare Supplier Category */
-
-    if (strcmp(
-            supplierCategory[firstIndex],
-            supplierCategory[secondIndex]
-        ) == 0)
+    if (strcmp(supplierCategory[firstIndex],
+               supplierCategory[secondIndex]) == 0)
     {
         printf("Both suppliers are in the same category.\n");
     }
