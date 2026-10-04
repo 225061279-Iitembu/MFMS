@@ -35,8 +35,7 @@ The system includes the following sections:
 * Main Menu
 * Input Validation
 
-The program uses menus to make it easier for the user to navigate between the different sections.
-
+The program uses menus to make it easier for the user to navigate between the different secti
 ## Technologies Used
 
 We used the following tools to develop the project:
