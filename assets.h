@@ -3,6 +3,7 @@
 
 void addAsset(void);
 void viewAssets(void);
+void searchAsset(void);
 void assetMenu(void);
 
 #endif
