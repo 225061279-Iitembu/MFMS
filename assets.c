@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "assets.h"
+#include "validation.h"
 
 #define MAX_ASSETS 100
 
@@ -24,20 +25,25 @@ void addAsset(void)
 
     printf("\n--- Add Asset ---\n");
 
-    printf("Enter asset ID: ");
-    scanf("%d", &assets[assetCount].id);
+    assets[assetCount].id =
+        getValidInt("Enter asset ID: ", 1, 1000000);
 
-    printf("Enter asset name: ");
-    scanf(" %[^\n]", assets[assetCount].name);
+    getValidString("Enter asset name: ",
+                   assets[assetCount].name,
+                   sizeof(assets[assetCount].name));
 
-    printf("Enter asset type: ");
-    scanf(" %[^\n]", assets[assetCount].type);
+    getValidString("Enter asset type: ",
+                   assets[assetCount].type,
+                   sizeof(assets[assetCount].type));
 
-    printf("Enter asset value: ");
-    scanf("%f", &assets[assetCount].value);
+    assets[assetCount].value =
+        (float)getValidDouble("Enter asset value: ", 0.0);
 
-    printf("Enter asset status (Available/In Use/Under Repair): ");
-    scanf(" %[^\n]", assets[assetCount].status);
+    getValidString(
+        "Enter asset status (Available/In Use/Under Repair): ",
+        assets[assetCount].status,
+        sizeof(assets[assetCount].status)
+    );
 
     assetCount++;
 
@@ -64,6 +70,35 @@ void viewAssets(void)
     }
 }
 
+void searchAsset(void)
+{
+    int id;
+    int i;
+    int found = 0;
+
+    printf("\n--- Search Asset ---\n");
+
+    id = getValidInt("Enter asset ID to search: ", 1, 1000000);
+
+    for (i = 0; i < assetCount; i++) {
+        if (assets[i].id == id) {
+            printf("\nAsset found!\n");
+            printf("Asset ID: %d\n", assets[i].id);
+            printf("Name: %s\n", assets[i].name);
+            printf("Type: %s\n", assets[i].type);
+            printf("Value: %.2f\n", assets[i].value);
+            printf("Status: %s\n", assets[i].status);
+
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Asset with ID %d was not found.\n", id);
+    }
+}
+
 void assetMenu(void)
 {
     int choice;
@@ -72,9 +107,9 @@ void assetMenu(void)
         printf("\n===== ASSET MANAGEMENT =====\n");
         printf("1. Add Asset\n");
         printf("2. View Assets\n");
-        printf("3. Return to Main Menu\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
+        printf("3. Search Asset\n");
+        printf("4. Return to Main Menu\n");
+        choice = getValidInt("Enter your choice: ", 1, 4);
 
         switch (choice) {
             case 1:
@@ -86,6 +121,10 @@ void assetMenu(void)
                 break;
 
             case 3:
+                searchAsset();
+                break;
+
+            case 4:
                 printf("Returning to main menu...\n");
                 break;
 
@@ -95,3 +134,4 @@ void assetMenu(void)
 
     } while (choice != 4);
 }
+
